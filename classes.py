@@ -20,7 +20,7 @@ class Player:
         self.walkRight = pygame.transform.scale(self.walkRight, (width, height))
 
         # starting speed
-        self.speed = [5, 5]
+        self.speed = 5
 
         # left or right facing, start facing right
         self.left = False
@@ -73,7 +73,7 @@ class Projectile:
         # which direction the bullet is going (left (-1) or right (1))
         self.facing = facing
 
-        self.vel = 10 * facing
+        self.vel = random.randint(10, 20) * facing
 
     def draw(self, win):
         pygame.draw.circle(win, self.color, (self.x, self.y), self.radius, 0)

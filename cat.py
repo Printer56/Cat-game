@@ -64,11 +64,11 @@ while run:
     # move left
     if keys[pygame.K_LEFT] and cat.x > 0:
         cat.left, cat.right = True, False
-        cat.x -= cat.speed[0]
+        cat.x -= cat.speed
     # move right
     if keys[pygame.K_RIGHT] and cat.x < width - cat.width:
         cat.left, cat.right = False, True
-        cat.x += cat.speed[0]
+        cat.x += cat.speed
 
     # jump function
     if not cat.isJump:
@@ -103,7 +103,9 @@ while run:
     now = pygame.time.get_ticks()
     if now - start1 > 2000:
         start1 = now
-        rock = Rock(width)
-        rocks.append(rock)
+        rock1 = Rock(width)
+        rock2 = Rock(width)
+        rocks.append(rock1)
+        rocks.append(rock2)
 
     redrawScreen()
