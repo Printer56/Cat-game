@@ -51,12 +51,29 @@ class Rock:
         self.x = random.randint(0, width - 50)
         self.y = 0
 
-        self.size_x = 50
-        self.size_y = 50
+        self.size_x = 30
+        self.size_y = 30
 
         self.image = pygame.image.load("assets/rock.png")
         self.image = pygame.transform.scale(self.image, (self.size_x, self.size_y))
 
     def fall(self, win):
-        self.y += 5
         win.blit(self.image, (self.x, self.y))
+
+class Projectile:
+    # Projectile is an object (like a bullet) that shoots out of the cat to either push other players into rocks or destroy rocks
+
+    def __init__(self, x, y, radius, color, facing) -> None:
+        # coordinates of bullet
+        self.x = x
+        self.y = y
+        # radius of bullet
+        self.radius = radius
+        self.color = color
+        # which direction the bullet is going (left (-1) or right (1))
+        self.facing = facing
+
+        self.vel = 10 * facing
+
+    def draw(self, win):
+        pygame.draw.circle(win, self.color, (self.x, self.y), self.radius, 0)

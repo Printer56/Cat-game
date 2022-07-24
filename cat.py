@@ -1,5 +1,5 @@
 import pygame
-from classes import Player, Rock
+from classes import Player, Rock, Projectile
 
 # initialize screen and pygame
 pygame.init()
@@ -11,7 +11,11 @@ pygame.display.set_caption("Cat!")
 # set game variables
 cat = Player(x=center[0], y=center[1] + 190)
 
-rock = Rock(width)
+rocks = []
+bullets = []
+
+start1 = pygame.time.get_ticks()
+start2 = pygame.time.get_ticks()
 
 run = True
 
@@ -23,7 +27,10 @@ def redrawScreen():
     win.blit(bg, (0, 0))
     cat.draw(win)
 
-    if rock.y < height:
+    for bullet in bullets:
+        bullet.draw(win)
+
+    for rock in rocks:
         rock.fall(win)
 
     pygame.display.update()
@@ -39,21 +46,33 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT: run = False
 
+    for bullet in bullets:
+        if bullet.x < width and bullet.x > 0:
+            bullet.x += bullet.vel
+        else:
+            bullets.pop(bullets.index(bullet))
+
+    for rock in rocks:
+        if rock.y < height:
+            rock.y += 5
+        else:
+            rocks.pop(rocks.index(rock))
+
     # getting key presses
     keys = pygame.key.get_pressed()
 
     # move left
-    if keys[pygame.K_a] and cat.x > 0:
+    if keys[pygame.K_LEFT] and cat.x > 0:
         cat.left, cat.right = True, False
         cat.x -= cat.speed[0]
     # move right
-    if keys[pygame.K_d] and cat.x < width - cat.width:
+    if keys[pygame.K_RIGHT] and cat.x < width - cat.width:
         cat.left, cat.right = False, True
         cat.x += cat.speed[0]
 
     # jump function
     if not cat.isJump:
-        if keys[pygame.K_SPACE]:
+        if keys[pygame.K_UP]:
             cat.isJump = True
 
     else:
@@ -67,5 +86,24 @@ while run:
         else:
             cat.isJump = False
             cat.jumpCount = 8
+
+    # shoot projectile, only once per second
+    if keys[pygame.K_SPACE] and now - start2 > 1000:
+        start2 = now
+        direction = -1 if cat.left else 1
+        x = cat.x
+        if direction == 1:
+            x = x + cat.width
+        y = cat.y + cat.width/2
+        bullet = Projectile(x, y, 5, pygame.Color(0, 255, 0), direction)
+
+        bullets.append(bullet)
+
+    # spawn rocks every 2 seconds
+    now = pygame.time.get_ticks()
+    if now - start1 > 2000:
+        start1 = now
+        rock = Rock(width)
+        rocks.append(rock)
 
     redrawScreen()
