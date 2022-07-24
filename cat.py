@@ -43,11 +43,11 @@ while run:
     keys = pygame.key.get_pressed()
 
     # move left
-    if keys[pygame.K_a]:
+    if keys[pygame.K_a] and cat.x > 0:
         cat.left, cat.right = True, False
         cat.x -= cat.speed[0]
     # move right
-    if keys[pygame.K_d]:
+    if keys[pygame.K_d] and cat.x < width - cat.width:
         cat.left, cat.right = False, True
         cat.x += cat.speed[0]
 

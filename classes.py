@@ -44,6 +44,8 @@ class Player:
 
 class Rock:
     # Rock is a projectile that falls from random x values from the sky
+
+    # Make little bits of fire branching off from rock?
     
     def __init__(self, width) -> None:
         self.x = random.randint(0, width - 50)
