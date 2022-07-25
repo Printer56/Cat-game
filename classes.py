@@ -54,10 +54,13 @@ class Rock:
         self.size_x = 30
         self.size_y = 30
 
+        self.vel = random.randint(5, 15)
+
         self.image = pygame.image.load("assets/rock.png")
         self.image = pygame.transform.scale(self.image, (self.size_x, self.size_y))
 
     def fall(self, win):
+        self.y += self.vel
         win.blit(self.image, (self.x, self.y))
 
 class Projectile:
@@ -73,7 +76,7 @@ class Projectile:
         # which direction the bullet is going (left (-1) or right (1))
         self.facing = facing
 
-        self.vel = random.randint(10, 20) * facing
+        self.vel = 10 * facing
 
     def draw(self, win):
         pygame.draw.circle(win, self.color, (self.x, self.y), self.radius, 0)

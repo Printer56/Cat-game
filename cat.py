@@ -1,4 +1,5 @@
 import pygame
+import random
 from classes import Player, Rock, Projectile
 
 # initialize screen and pygame
@@ -53,9 +54,7 @@ while run:
             bullets.pop(bullets.index(bullet))
 
     for rock in rocks:
-        if rock.y < height:
-            rock.y += 5
-        else:
+        if rock.y >= height - rock.size_y:
             rocks.pop(rocks.index(rock))
 
     # getting key presses
@@ -102,6 +101,8 @@ while run:
     # spawn rocks every 2 seconds
     now = pygame.time.get_ticks()
     if now - start1 > 2000:
+        vel1 = random.randint(10, 20)
+        vel2 = random.randint(10, 20)
         start1 = now
         rock1 = Rock(width)
         rock2 = Rock(width)

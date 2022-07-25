@@ -1,8 +1,6 @@
 TODO LIST
 
-1. Varying velocity on each rock
-2. Fix the weird bug where a rock will slow down for a split second
-3. Detect collisions
-4. Scoring system
-5. Menu
-6. Multiplayer
+1. Detect collisions
+2. Scoring system
+3. Menu
+4. Multiplayer
