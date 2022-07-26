@@ -1,6 +1,6 @@
 import pygame
 import random
-from classes import Player, Rock, Projectile
+from classes import Player, Powerup, Rock, Projectile
 
 # initialize screen and pygame
 pygame.init()
@@ -17,6 +17,11 @@ bullets = []
 
 start1 = pygame.time.get_ticks()
 start2 = pygame.time.get_ticks()
+
+score = 0
+
+# how many miliseconds you have in between shots
+shoot_time = 1000
 
 run = True
 
@@ -36,6 +41,28 @@ def redrawScreen():
 
     pygame.display.update()
 
+def generate_rocks(n: int) -> None:
+    # generates n number of rocks on the screen
+    chance = random.randint(1, 4)
+    powerup = True if chance == 4 else False
+
+    for num in range(n):
+        rock = Rock(width)
+        if powerup:
+            rock = Powerup(width)
+            powerup = False
+        rocks.append(rock)
+
+def shoot_bullet():
+    direction = -1 if cat.left else 1
+    x = cat.x
+    if direction == 1:
+        x = x + cat.width
+    y = cat.y + cat.width/2
+    bullet = Projectile(x, y, 5, pygame.Color(0, 255, 0), direction)
+
+    bullets.append(bullet)
+
 while run:
     # display background
     win.blit(bg, (0, 0))
@@ -53,8 +80,30 @@ while run:
         else:
             bullets.pop(bullets.index(bullet))
 
+        for rock in rocks:
+            if bullet.hitbox.colliderect(rock.hitbox):
+                rocks.pop(rocks.index(rock))
+                bullets.pop(bullets.index(bullet))
+                score += 1
+                print(score)
+
     for rock in rocks:
-        if rock.y >= height - rock.size_y:
+        # cat hit rocks
+        if cat.hitbox.colliderect(rock.hitbox):
+            if isinstance(rock, Powerup):
+                power = rock.activate_powerup()
+
+                match power:
+                    case 1:
+                        cat.speed *= 2
+                    case 2:
+                        shoot_time /= 2
+                    case 3:
+                        continue
+            else:
+                continue
+            rocks.pop(rocks.index(rock))
+        elif rock.y >= height - rock.size_y:
             rocks.pop(rocks.index(rock))
 
     # getting key presses
@@ -87,26 +136,14 @@ while run:
             cat.jumpCount = 8
 
     # shoot projectile, only once per second
-    if keys[pygame.K_SPACE] and now - start2 > 1000:
+    if keys[pygame.K_SPACE] and now - start2 > shoot_time:
         start2 = now
-        direction = -1 if cat.left else 1
-        x = cat.x
-        if direction == 1:
-            x = x + cat.width
-        y = cat.y + cat.width/2
-        bullet = Projectile(x, y, 5, pygame.Color(0, 255, 0), direction)
-
-        bullets.append(bullet)
+        shoot_bullet()
 
     # spawn rocks every 2 seconds
     now = pygame.time.get_ticks()
     if now - start1 > 2000:
-        vel1 = random.randint(10, 20)
-        vel2 = random.randint(10, 20)
+        generate_rocks(2)
         start1 = now
-        rock1 = Rock(width)
-        rock2 = Rock(width)
-        rocks.append(rock1)
-        rocks.append(rock2)
 
     redrawScreen()

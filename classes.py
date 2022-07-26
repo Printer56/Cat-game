@@ -30,6 +30,10 @@ class Player:
         self.isJump = False
         self.jumpCount = 8
 
+        # hitbox
+        # self.hitbox = self.walkLeft(self.x, self.y, width, height)
+        self.hitbox = self.walkLeft.get_rect(topleft=(self.x, self.y))
+
     def draw(self, win):
         if self.right:
             win.blit(self.walkRight, (self.x, self.y))
@@ -40,6 +44,13 @@ class Player:
         else:
             direction = self.walkLeft if self.left else self.walkRight
             win.blit(direction, (self.x, self.y))
+
+        # self.hitbox = (self.x, self.y, self.width, self.height)
+        self.hitbox = self.walkLeft.get_rect(topleft=(self.x, self.y))
+        # pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
+
+    def hit(self):
+        print('hit')
 
 
 class Rock:
@@ -59,9 +70,14 @@ class Rock:
         self.image = pygame.image.load("assets/rock.png")
         self.image = pygame.transform.scale(self.image, (self.size_x, self.size_y))
 
+        self.hitbox = self.image.get_rect(topleft=(self.x, self.y))
+
     def fall(self, win):
         self.y += self.vel
         win.blit(self.image, (self.x, self.y))
+
+        self.hitbox = self.image.get_rect(topleft=(self.x, self.y))
+        # pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
 
 class Projectile:
     # Projectile is an object (like a bullet) that shoots out of the cat to either push other players into rocks or destroy rocks
@@ -78,5 +94,42 @@ class Projectile:
 
         self.vel = 10 * facing
 
+        self.hitbox = pygame.Rect(self.x/2, self.y/2, radius * 2, radius * 2)
+
     def draw(self, win):
         pygame.draw.circle(win, self.color, (self.x, self.y), self.radius, 0)
+        self.hitbox = pygame.Rect(self.x - self.radius, self.y - self.radius, self.radius * 2, self.radius * 2)
+        # pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
+
+class Powerup(Rock):
+    def __init__(self, width) -> None:
+        super().__init__(width)
+
+        self.type = random.randint(1, 3)
+        self.name = ""
+
+        self.hitbox = pygame.Rect(self.x, self.y, self.size_x, self.size_y)
+
+        match self.type:
+            case 1:
+                # faster movement
+                self.name = "speed"
+                self.color = (255, 0, 0)
+            case 2:
+                # shoot bullets twice as fast
+                self.name = "shoot"
+                self.color = (0, 255, 0)
+            case 3:
+                # more money when destroying rock
+                self.name = "money"
+                self.color = (0, 0, 255)
+
+    def fall(self, win):
+        self.y += self.vel
+        # line needed for when i get a sprite of the powerups
+        # win.blit(self.image, (self.x, self.y))
+        self.hitbox = pygame.Rect(self.x, self.y, self.size_x, self.size_y)
+        pygame.draw.rect(win, self.color, (self.x, self.y, self.size_x, self.size_y))
+
+    def activate_powerup(self):
+        return self.type
