@@ -22,11 +22,12 @@ score = 0
 
 # how many miliseconds you have in between shots
 shoot_time = 1000
+canShoot = True
 
 run = True
 
 # loading background
-bg = pygame.image.load("assets/bg.png")
+bg = pygame.image.load("assets/images/bg.png")
 bg = pygame.transform.scale(bg, (width, height))
 
 def redrawScreen():
@@ -84,8 +85,10 @@ while run:
             if bullet.hitbox.colliderect(rock.hitbox):
                 rocks.pop(rocks.index(rock))
                 bullets.pop(bullets.index(bullet))
+                if isinstance(rock, Powerup): break
                 score += 1
                 print(score)
+                break
 
     for rock in rocks:
         # cat hit rocks
@@ -99,9 +102,10 @@ while run:
                     case 2:
                         shoot_time /= 2
                     case 3:
+                        rocks.pop(rocks.index(rock))
                         continue
             else:
-                continue
+                cat.hit()
             rocks.pop(rocks.index(rock))
         elif rock.y >= height - rock.size_y:
             rocks.pop(rocks.index(rock))
@@ -113,10 +117,16 @@ while run:
     if keys[pygame.K_LEFT] and cat.x > 0:
         cat.left, cat.right = True, False
         cat.x -= cat.speed
+
+        if cat.x < 0:
+            cat.x = 0
     # move right
     if keys[pygame.K_RIGHT] and cat.x < width - cat.width:
         cat.left, cat.right = False, True
         cat.x += cat.speed
+
+        if cat.x > width - cat.width:
+            cat.x = width - cat.width
 
     # jump function
     if not cat.isJump:
@@ -136,9 +146,13 @@ while run:
             cat.jumpCount = 8
 
     # shoot projectile, only once per second
-    if keys[pygame.K_SPACE] and now - start2 > shoot_time:
-        start2 = now
+    if keys[pygame.K_SPACE] and canShoot:
         shoot_bullet()
+        canShoot = False
+        start2 = now
+
+    if not canShoot and now - start2 > shoot_time:
+        canShoot = True
 
     # spawn rocks every 2 seconds
     now = pygame.time.get_ticks()

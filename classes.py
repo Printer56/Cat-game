@@ -1,7 +1,8 @@
 import pygame
 import random
+import os
 
-char = pygame.image.load("assets/cat_stand_right.gif")
+char = pygame.image.load("assets/images/cat_stand_right.gif")
 
 class Player:
     # This is the main player
@@ -13,10 +14,10 @@ class Player:
         self.height = height
 
         # initialize images
-        self.walkLeft = pygame.image.load("assets/cat_stand_left.gif")
+        self.walkLeft = pygame.image.load("assets/images/cat_stand_left.gif")
         self.walkLeft = pygame.transform.scale(self.walkLeft, (width, height))
 
-        self.walkRight = pygame.image.load("assets/cat_stand_right.gif")
+        self.walkRight = pygame.image.load("assets/images/cat_stand_right.gif")
         self.walkRight = pygame.transform.scale(self.walkRight, (width, height))
 
         # starting speed
@@ -33,6 +34,8 @@ class Player:
         # hitbox
         # self.hitbox = self.walkLeft(self.x, self.y, width, height)
         self.hitbox = self.walkLeft.get_rect(topleft=(self.x, self.y))
+
+    # def blink(self, direction):
 
     def draw(self, win):
         if self.right:
@@ -67,7 +70,7 @@ class Rock:
 
         self.vel = random.randint(5, 15)
 
-        self.image = pygame.image.load("assets/rock.png")
+        self.image = pygame.image.load("assets/images/rock.png")
         self.image = pygame.transform.scale(self.image, (self.size_x, self.size_y))
 
         self.hitbox = self.image.get_rect(topleft=(self.x, self.y))

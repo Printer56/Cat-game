@@ -1,7 +1,8 @@
 TODO LIST
 
-1. Draw score on screen
-2. Menu
-3. Multiplayer
-4. Create powerups
-5. Game over screen when cat gets hit by collision
+1. Make cat blink
+2. Draw score on screen
+3. Menu
+4. Multiplayer
+5. Create powerups
+6. Game over screen when cat gets hit by collision
