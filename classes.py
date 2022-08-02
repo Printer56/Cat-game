@@ -1,6 +1,5 @@
 import pygame
 import random
-import os
 
 char = pygame.image.load("assets/images/cat_stand_right.gif")
 
@@ -37,7 +36,19 @@ class Player:
 
     # def blink(self, direction):
 
-    def draw(self, win):
+    def jump(self):
+        if self.jumpCount >= -8:
+            neg = 1
+            if self.jumpCount < 0:
+                neg = -1
+            y = -((self.jumpCount ** 2) / 2 * neg)
+            self.jumpCount -= 1
+            self.y += y
+        else:
+            self.isJump = False
+            self.jumpCount = 8
+
+    def draw(self, win: pygame.Surface):
         if self.right:
             win.blit(self.walkRight, (self.x, self.y))
             self.left, self.right = False,  True
@@ -61,7 +72,7 @@ class Rock:
 
     # Make little bits of fire branching off from rock?
     
-    def __init__(self, width) -> None:
+    def __init__(self, width: int) -> None:
         self.x = random.randint(0, width - 50)
         self.y = 0
 
@@ -75,7 +86,7 @@ class Rock:
 
         self.hitbox = self.image.get_rect(topleft=(self.x, self.y))
 
-    def fall(self, win):
+    def fall(self, win: pygame.Surface):
         self.y += self.vel
         win.blit(self.image, (self.x, self.y))
 

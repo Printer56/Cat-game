@@ -102,8 +102,7 @@ while run:
                     case 2:
                         shoot_time /= 2
                     case 3:
-                        rocks.pop(rocks.index(rock))
-                        continue
+                        pass
             else:
                 cat.hit()
             rocks.pop(rocks.index(rock))
@@ -132,18 +131,8 @@ while run:
     if not cat.isJump:
         if keys[pygame.K_UP]:
             cat.isJump = True
-
     else:
-        if cat.jumpCount >= -8:
-            neg = 1
-            if cat.jumpCount < 0:
-                neg = -1
-            y = -((cat.jumpCount ** 2) / 2 * neg)
-            cat.jumpCount -= 1
-            cat.y += y
-        else:
-            cat.isJump = False
-            cat.jumpCount = 8
+        cat.jump()
 
     # shoot projectile, only once per second
     if keys[pygame.K_SPACE] and canShoot:
@@ -151,8 +140,7 @@ while run:
         canShoot = False
         start2 = now
 
-    if not canShoot and now - start2 > shoot_time:
-        canShoot = True
+    if not canShoot and now - start2 > shoot_time: canShoot = True
 
     # spawn rocks every 2 seconds
     now = pygame.time.get_ticks()
